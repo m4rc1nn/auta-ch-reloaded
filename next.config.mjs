@@ -1,7 +1,7 @@
 const nextConfig = {
     output: "export",
     reactStrictMode: true,
-    basePath: '/auta-ch',
+    basePath: '/auta-ch-reloaded',
     images: { unoptimized: true }
 };
 
