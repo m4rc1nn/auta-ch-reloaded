@@ -1,10 +1,13 @@
 import { Auction } from "@/app/types/Auction";
+import Image from 'next/image';
 
 export default function AuctionCard({ auction }: { auction: Auction }) {
     return (
         <a href={"https://auta.ch/" + auction.link} className="w-full h-full flex flex-col">
             <div className="md:max-h-64 w-full rounded-md flex justify-center items-start">
-                <img
+                <Image
+                    width={300}
+                    height={200}
                     alt={auction.name}
                     src={"https://auta.ch/" + auction.img}
                     className="max-h-[500px] md:max-h-64 w-full rounded-md object-cover transition-all duration-50 z-50"

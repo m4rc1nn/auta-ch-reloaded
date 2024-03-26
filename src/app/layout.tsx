@@ -19,7 +19,7 @@ export default function RootLayout({
         <html lang="en">
             <body className={`${inter.className} relative`}>
                 <NavBar />
-                {children}
+                <div className="px-2">{children}</div>
             </body>
         </html>
     );
