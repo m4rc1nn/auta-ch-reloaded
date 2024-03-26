@@ -6,7 +6,7 @@ import { Auction } from "./types/Auction";
 import { Metadata } from "next";
 import FillterBlock from "@/components/FillterBlock";
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-static"
 
 export const revalidate = 900;
 
