@@ -1,12 +1,6 @@
-type AuctionProps = {
-    link: string;
-    name: string;
-    img: string;
-    firstRegistration: string;
-    mileage: string;
-};
+import { Auction } from "@/app/types/Auction";
 
-export default function AuctionCard({ auction }: { auction: AuctionProps }) {
+export default function AuctionCard({ auction }: { auction: Auction }) {
     return (
         <a href={"https://auta.ch/" + auction.link} className="w-full h-full flex flex-col">
             <div className="md:max-h-64 w-full rounded-md flex justify-center items-start">
