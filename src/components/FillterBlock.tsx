@@ -42,7 +42,7 @@ export default function FillterBlock({brandSQ, productionFromSQ, productionToSQ,
     }, [])
 
     return (
-        <form action={"/"} className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full md:w-1/2">
+        <form action={"./"} className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full md:w-1/2">
             <div className="md:col-span-2">
                 <ComboBox placeholder="Wybierz markę" items={cars} setItem={setBrand} defaultValue={brand} />
             </div>
