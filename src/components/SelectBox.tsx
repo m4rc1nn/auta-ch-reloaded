@@ -8,9 +8,10 @@ type SelectBoxProps = {
     items: string[];
     setItem: (item: string) => void;
     defaultValue: string;
+    unit?: string;
 };
 
-export default function SelectBox({ placeholder, items, setItem, defaultValue }: SelectBoxProps) {
+export default function SelectBox({ placeholder, items, setItem, defaultValue, unit }: SelectBoxProps) {
     const [value, setValue] = useState<string>("");
 
     useEffect(() => {
@@ -24,14 +25,14 @@ export default function SelectBox({ placeholder, items, setItem, defaultValue }:
                     setValue(v);
                     setItem(v);
                 }}>
-                <SelectTrigger className="py-6 text-lg">
-                    <SelectValue placeholder={placeholder} className="text-lg" />
+                <SelectTrigger className="py-6 text-sm">
+                    <SelectValue placeholder={placeholder} className="text-sm" />
                 </SelectTrigger>
                 <SelectContent>
                     {items.map((item, index) => {
                         return (
-                            <SelectItem className="text-lg" key={index} value={item}>
-                                {item}
+                            <SelectItem className="text-sm" key={index} value={item}>
+                                {item} {unit ? unit : ''}
                             </SelectItem>
                         );
                     })}
