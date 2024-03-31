@@ -32,7 +32,7 @@ export default function ComboBox({ placeholder, items, setItem, defaultValue }: 
                         variant="outline"
                         role="combobox"
                         aria-expanded={open}
-                        className="w-full py-6 justify-between text-lg">
+                        className="w-full py-6 justify-between text-sm">
                         {value ? value : placeholder}
                         <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
@@ -41,7 +41,7 @@ export default function ComboBox({ placeholder, items, setItem, defaultValue }: 
                     <Command className="w-full">
                         <CommandInput placeholder={placeholder} className="h-9" />
                         <CommandEmpty>Nie znaleziono.</CommandEmpty>
-                        <CommandGroup>
+                        <CommandGroup className="max-h-[400px] overflow-scroll">
                             {items.map((item) => (
                                 <CommandItem
                                     key={item.value}
@@ -51,7 +51,7 @@ export default function ComboBox({ placeholder, items, setItem, defaultValue }: 
                                         setItem(item.label);
                                         setOpen(false);
                                     }}
-                                    className="text-lg">
+                                    className="text-sm">
                                     {item.label}
                                     <CheckIcon
                                         className={cn(
