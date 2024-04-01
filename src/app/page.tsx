@@ -1,19 +1,26 @@
 import AuctionCard from "@/components/AuctionCard";
-import axios from "axios";
-import { JSDOM } from "jsdom";
 import { Auction } from "./types/Auction";
 import FilterSheet from "@/components/FilterSheet";
 
 export default async function Home({ searchParams }: { searchParams: any }) {
-    const { brand, productionFrom, productionTo, mileageFrom, mileageTo } = searchParams;
-    const auctions = await getAuctions(brand, productionFrom, productionTo, mileageFrom, mileageTo);
+    const { brand, productionFrom, productionTo, mileageFrom, mileageTo, auctionEndBefore } = searchParams;
+    const auctions = await getAuctions(
+        brand ? brand : null,
+        productionFrom ? new Date(productionFrom) : null,
+        productionTo ? new Date(productionTo) : null,
+        mileageFrom ? parseInt(mileageFrom) : null,
+        mileageTo ? parseInt(mileageTo) : null,
+        auctionEndBefore ? new Date(auctionEndBefore) : null
+    );
 
     if (auctions instanceof Error) {
         return (
             <div className="mt-6 max-w-7xl container px-2 sm:px-3 mx-auto">
                 <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                     <div className="my-6">
-                        <span className="text-xl underline">Wystąpił błąd podczas przetwarzania zapytania ze strony auta.ch. Spróbuj ponownie później.</span>
+                        <span className="text-xl underline">
+                            Wystąpił błąd podczas przetwarzania zapytania ze strony auta.ch. Spróbuj ponownie później.
+                        </span>
                     </div>
                 </div>
             </div>
@@ -46,45 +53,82 @@ export default async function Home({ searchParams }: { searchParams: any }) {
 }
 
 async function getAuctions(
-    brand: string = "",
-    productionStart: string = "",
-    productionEnd: string = "",
-    mileageFrom: string = "",
-    mileageTo: string = ""
+    brand: string | null,
+    productionStart: Date | null,
+    productionEnd: Date | null,
+    mileageFrom: number | null,
+    mileageTo: number | null,
+    auctionEndBefore: Date | null
 ): Promise<Auction[] | Error> {
     try {
-        const { data } = await axios.get(
-            `https://auta.ch/aukcje/?phrase=&brand=${brand}&production_date_from=${productionStart}&production_date_to=${productionEnd}&run_from=${mileageFrom}&run_to=${mileageTo}`,
-            { responseType: "document" }
-        );
+        const response = await fetch(`https://auta.ch/api/v1/auctions/?format=json`, {
+            next: { revalidate: 60 },
+        }).then((res) => res.json());
 
-        const dom = new JSDOM(data);
-        const document = dom.window.document;
+        const filteredAuctions = response
+            .filter((entry: any) => {
+                if (brand === null) return true;
+                if (brand.trim() === "") return false;
+                if (!entry.title.toLowerCase().includes(brand.toLowerCase())) return false;
+                return true;
+            })
+            .filter((entry: any) => {
+                if (productionStart === null) return true;
+                const firstRegistration: Date = new Date(entry.production_date);
+                if (firstRegistration.getTime() < productionStart.getTime()) return false;
+                return true;
+            })
+            .filter((entry: any) => {
+                if (productionEnd === null) return true;
+                const firstRegistration: Date = new Date(entry.production_date);
+                if (firstRegistration.getTime() > productionEnd.getTime()) return false;
+                return true;
+            })
+            .filter((entry: any) => {
+                if (mileageFrom === null) return true;
+                const mileage: number = entry.run;
+                if (mileage < mileageFrom) return false;
+                return true;
+            })
+            .filter((entry: any) => {
+                if (mileageTo === null) return true;
+                const mileage: number = entry.run;
+                if (mileage < mileageTo) return false;
+                return true;
+            })
+            .filter((entry: any) => {
+                if (auctionEndBefore === null) return true;
+                const auctionEnd: Date = new Date(entry.end_date);
+                if (auctionEnd.getTime() > auctionEndBefore.getTime()) return false;
+                return true;
+            })
+            .map((entry: any) => {
+                const link = `https://auta.ch/aukcje/licytacja/${entry.id}/${toKebabCase(entry.title)}`;
+                const img = `https://auta.ch/${entry.photos}`;
+                const auction: Auction = {
+                    link,
+                    name: entry.title,
+                    img,
+                    firstRegistration: new Date(entry.production_date),
+                    mileage: parseInt(entry.run),
+                    referenceNumber: entry.ref_id,
+                    auctionEnd: new Date(entry.end_date ?? ""),
+                };
 
-        const auctionEntries = [...document.querySelectorAll(".auction-entry")].map((entry) => {
-            const link = entry.querySelector("a")?.getAttribute("href") ?? "";
-            const img = entry.querySelector(".auction-entry-image")?.getAttribute("src") ?? "";
-            const name = entry.querySelector(".auction-entry-info h4 a")?.textContent ?? "";
-            const firstRegistration = entry.querySelector(".auction-entry-info p b")?.textContent ?? "";
-            const mileage = entry.querySelectorAll(".auction-entry-info p b")[1]?.textContent ?? "";
-            const referenceNumber = entry.querySelector("b.reference-number-field")?.textContent ?? "";
-            const auctionEnd = new Date(entry.getAttribute("data-end") ?? "1711398806025") ?? new Date();
+                return auction;
+            });
 
-            const auction: Auction = {
-                link,
-                name,
-                img,
-                firstRegistration,
-                mileage,
-                referenceNumber,
-                auctionEnd,
-            };
-
-            return auction;
-        });
-        return auctionEntries;
+        return filteredAuctions.reverse();
     } catch (error) {
         console.error(error);
         return new Error("Error while fetching data from auta.ch");
     }
+}
+
+function toKebabCase(text: string) {
+    return text
+        .replace(/[\s_]+/g, "-")
+        .replace(/([A-Z])/g, (match, letter, index) => (index > 0 ? "-" : "") + letter.toLowerCase())
+        .replace(/[^a-zA-Z0-9-]/g, "")
+        .replace(/^-+|-+$/g, "");
 }
