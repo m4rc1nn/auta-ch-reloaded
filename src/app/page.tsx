@@ -1,9 +1,6 @@
 import AuctionCard from "@/components/AuctionCard";
 import { Auction } from "./types/Auction";
 import FilterSheet from "@/components/FilterSheet";
-import { headers } from "next/headers";
-
-export const revalidate = 0;
 
 export default async function Home({ searchParams }: { searchParams: any }) {
     const { brand, productionFrom, productionTo, mileageFrom, mileageTo, auctionEndBefore } = searchParams;
@@ -63,10 +60,9 @@ async function getAuctions(
     mileageTo: number | null,
     auctionEndBefore: Date | null
 ): Promise<Auction[] | Error> {
-    const _ = headers();
     try {
         const response = await fetch(`https://auta.ch/api/v1/auctions/?format=json`, {
-            next: { revalidate: 60 },
+            cache: "no-store",
         }).then((res) => res.json());
 
         const filteredAuctions = response
