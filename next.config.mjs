@@ -18,10 +18,9 @@ export default function (phase, { defaultConfig }) {
 
     return {
         output: "export",
-        reactStrictMode: true,
         basePath: "/auta-ch-reloaded",
         images: {
-            unoptimized: true,
+            unoptimized: false,
             remotePatterns: [
                 {
                     protocol: "https",
