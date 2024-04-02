@@ -35,6 +35,7 @@ export default async function Home({ searchParams }: { searchParams: any }) {
                     <p className="mt-2 text-muted-foreground">
                         Sprawdź listę wszystkich aukcji samochodowych ze strony auta.ch
                     </p>
+                    <p>{JSON.stringify(searchParams)}</p>
                 </div>
                 <FilterSheet />
             </div>
