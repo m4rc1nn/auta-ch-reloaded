@@ -20,7 +20,7 @@ export default function (phase, { defaultConfig }) {
         output: "export",
         basePath: "/auta-ch-reloaded",
         images: {
-            unoptimized: false,
+            unoptimized: true,
             remotePatterns: [
                 {
                     protocol: "https",
