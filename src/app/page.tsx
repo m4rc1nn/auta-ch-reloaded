@@ -1,6 +1,7 @@
 import AuctionCard from "@/components/AuctionCard";
 import { Auction } from "./types/Auction";
 import FilterSheet from "@/components/FilterSheet";
+import { cookies } from "next/headers";
 
 export default async function Home({ searchParams }: { searchParams: any }) {
     console.log(searchParams);
@@ -61,6 +62,7 @@ async function getAuctions(
     mileageTo: number | null,
     auctionEndBefore: Date | null
 ): Promise<Auction[] | Error> {
+    const _ = cookies()
     try {
         const response = await fetch(`https://auta.ch/api/v1/auctions/?format=json`, {
             next: { revalidate: 60 },
