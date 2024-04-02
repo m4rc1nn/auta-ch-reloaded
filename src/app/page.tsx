@@ -1,5 +1,3 @@
-"use server";
-
 import AuctionCard from "@/components/AuctionCard";
 import { Auction } from "./types/Auction";
 import FilterSheet from "@/components/FilterSheet";
@@ -8,7 +6,6 @@ import { headers } from "next/headers";
 export const revalidate = 0;
 
 export default async function Home({ searchParams }: { searchParams: any }) {
-    console.log(searchParams);
     const { brand, productionFrom, productionTo, mileageFrom, mileageTo, auctionEndBefore } = searchParams;
     const auctions = await getAuctions(
         brand ? brand : null,
