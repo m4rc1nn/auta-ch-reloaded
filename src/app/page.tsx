@@ -3,6 +3,7 @@ import { Auction } from "./types/Auction";
 import FilterSheet from "@/components/FilterSheet";
 
 export default async function Home({ searchParams }: { searchParams: any }) {
+    console.log(searchParams);
     const { brand, productionFrom, productionTo, mileageFrom, mileageTo, auctionEndBefore } = searchParams;
     const auctions = await getAuctions(
         brand ? brand : null,

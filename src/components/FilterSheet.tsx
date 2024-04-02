@@ -127,7 +127,7 @@ export default function FilterSheet() {
                 </div>
                 <SheetFooter>
                     <SheetClose asChild>
-                        <form action={"./"} className="w-full">
+                        <form action={"/"} className="w-full">
                             <input type="hidden" name="brand" value={brand} />
                             <input type="hidden" name="productionFrom" value={productionFrom} />
                             <input type="hidden" name="productionTo" value={productionTo} />
