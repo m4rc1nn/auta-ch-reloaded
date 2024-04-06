@@ -64,6 +64,7 @@ async function getAuctions(
     try {
         const response = await fetch(`https://auta.ch/api/v1/auctions/?format=json`, {
             cache: "no-store",
+            next: { revalidate: 1 }
         }).then((res) => res.json());
 
         const filteredAuctions = response
