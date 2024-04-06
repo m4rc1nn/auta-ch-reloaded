@@ -67,7 +67,7 @@ async function getAuctions(
     auctionEndBefore: Date | null
 ): Promise<Auction[] | Error> {
     try {
-        const response = await fetch(`https://auta.ch/api/v1/auctions/?format=json`).then((res) => res.json());
+        const response = await fetch(`https://corsproxy.io/?https%3A%2F%2Fauta.ch%2Fapi%2Fv1%2Fauctions%2F%3Fformat%3Djson`).then((res) => res.json());
 
         const filteredAuctions = response
             .filter((entry: any) => {
