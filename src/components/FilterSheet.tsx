@@ -127,12 +127,13 @@ export default function FilterSheet() {
                 </div>
                 <SheetFooter>
                     <SheetClose asChild>
-                        <form action={"./"} className="w-full">
+                        <form action={"./"} className="w-full flex justify-end items-end gap-2">
                             <input type="hidden" name="brand" value={brand} />
                             <input type="hidden" name="productionFrom" value={productionFrom} />
                             <input type="hidden" name="productionTo" value={productionTo} />
                             <input type="hidden" name="mileageFrom" value={mileageFrom} />
                             <input type="hidden" name="mileageTo" value={mileageTo} />
+                            <Button type="button" variant='outline' className="w-full sm:w-fit" onClick={() => window.location.href = './'}>Wyczyść</Button>
                             <Button type="submit" className="w-full sm:w-fit">Pokaż wyniki</Button>
                         </form>
                     </SheetClose>
