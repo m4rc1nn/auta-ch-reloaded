@@ -11,7 +11,7 @@ import { CalendarIcon, BarChartIcon, IdCardIcon } from "@radix-ui/react-icons";
 
 export default function AuctionCard({ auction }: { auction: Auction }) {
     return (
-        <Link href={auction.link} className="w-full h-full self-stretch">
+        <Link href={auction.link} target="_blank" className="w-full h-full self-stretch">
             <Card className="w-full h-full flex justify-between flex-col">
                 <CardHeader className="p-2 md:p-4">
                     <TooltipProvider delayDuration={1}>
