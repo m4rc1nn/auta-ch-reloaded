@@ -1,31 +1,37 @@
+"use client";
+
+import { useSearchParams } from "next/navigation";
 import AuctionCard from "@/components/AuctionCard";
 import { Auction } from "./types/Auction";
 import FilterSheet from "@/components/FilterSheet";
+import { useEffect, useState } from "react";
 
-export default async function Home({ searchParams }: { searchParams: any }) {
-    const { brand, productionFrom, productionTo, mileageFrom, mileageTo, auctionEndBefore } = searchParams;
-    const auctions = await getAuctions(
-        brand ? brand : null,
-        productionFrom ? new Date(productionFrom) : null,
-        productionTo ? new Date(productionTo) : null,
-        mileageFrom ? parseInt(mileageFrom) : null,
-        mileageTo ? parseInt(mileageTo) : null,
-        auctionEndBefore ? new Date(auctionEndBefore) : null
-    );
+export default async function Home() {
+    const searchParams = useSearchParams();
 
-    if (auctions instanceof Error) {
-        return (
-            <div className="mt-6 max-w-7xl container px-2 sm:px-3 mx-auto">
-                <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                    <div className="my-6">
-                        <span className="text-xl underline">
-                            Wystąpił błąd podczas przetwarzania zapytania ze strony auta.ch. Spróbuj ponownie później.
-                        </span>
-                    </div>
-                </div>
-            </div>
-        );
-    }
+    const brand = searchParams.get("brand");
+    const productionFrom = searchParams.get("productionFrom");
+    const productionTo = searchParams.get("productionTo");
+    const mileageFrom = searchParams.get("mileageFrom");
+    const mileageTo = searchParams.get("mileageTo");
+    const auctionEndBefore = searchParams.get("auctionEndBefore");
+
+    const [auctions, setAuctions] = useState<Auction[]>([]);
+
+    useEffect(() => {
+        (async () => {
+            const auctionsResponse = await getAuctions(
+                brand ? brand : null,
+                productionFrom ? new Date(productionFrom) : null,
+                productionTo ? new Date(productionTo) : null,
+                mileageFrom ? parseInt(mileageFrom) : null,
+                mileageTo ? parseInt(mileageTo) : null,
+                auctionEndBefore ? new Date(auctionEndBefore) : null
+            );
+            if (auctionsResponse instanceof Error) return;
+            setAuctions(auctionsResponse);
+        })();
+    }, []);
 
     return (
         <div className="mt-6 max-w-7xl container px-2 sm:px-3 mx-auto">
@@ -35,7 +41,6 @@ export default async function Home({ searchParams }: { searchParams: any }) {
                     <p className="mt-2 text-muted-foreground">
                         Sprawdź listę wszystkich aukcji samochodowych ze strony auta.ch
                     </p>
-                    <p>{JSON.stringify(searchParams)}</p>
                 </div>
                 <FilterSheet />
             </div>
@@ -62,10 +67,7 @@ async function getAuctions(
     auctionEndBefore: Date | null
 ): Promise<Auction[] | Error> {
     try {
-        const response = await fetch(`https://auta.ch/api/v1/auctions/?format=json`, {
-            cache: "no-store",
-            next: { revalidate: 1 }
-        }).then((res) => res.json());
+        const response = await fetch(`https://auta.ch/api/v1/auctions/?format=json`).then((res) => res.json());
 
         const filteredAuctions = response
             .filter((entry: any) => {

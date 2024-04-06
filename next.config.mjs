@@ -18,7 +18,6 @@ export default function (phase, { defaultConfig }) {
 
     return {
         images: {
-            unoptimized: true,
             remotePatterns: [
                 {
                     protocol: "https",
