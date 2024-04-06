@@ -17,8 +17,6 @@ export default function (phase, { defaultConfig }) {
     }
 
     return {
-        output: "export",
-        basePath: "/auta-ch-reloaded",
         images: {
             unoptimized: true,
             remotePatterns: [
