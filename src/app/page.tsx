@@ -6,7 +6,7 @@ import { Auction } from "./types/Auction";
 import FilterSheet from "@/components/FilterSheet";
 import { useEffect, useState } from "react";
 
-export default async function Home() {
+export default function Home() {
     const searchParams = useSearchParams();
 
     const brand = searchParams.get("brand");
