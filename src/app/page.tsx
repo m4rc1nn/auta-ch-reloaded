@@ -103,7 +103,11 @@ async function getAuctions(
 ): Promise<Auction[] | Error> {
     try {
         const response = await fetch(
-            `https://corsproxy.io/?https%3A%2F%2Fauta.ch%2Fapi%2Fv1%2Fauctions%2F%3Fformat%3Djson`
+            `https://corsproxy.io/?https%3A%2F%2Fauta.ch%2Fapi%2Fv1%2Fauctions%2F%3Fformat%3Djson`, {
+                next: {
+                    revalidate: 1
+                }
+            }
         ).then((res) => res.json());
 
         const filteredAuctions = response
