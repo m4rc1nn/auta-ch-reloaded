@@ -104,9 +104,7 @@ async function getAuctions(
     try {
         const response = await fetch(
             `https://corsproxy.io/?https%3A%2F%2Fauta.ch%2Fapi%2Fv1%2Fauctions%2F%3Fformat%3Djson`, {
-                next: {
-                    revalidate: 1
-                }
+                cache: 'no-store',
             }
         ).then((res) => res.json());
 
