@@ -102,12 +102,14 @@ async function getAuctions(
     auctionEndBefore: Date | null
 ): Promise<Auction[] | Error> {
     try {
-        const response = await fetch(
-            'https://auta.ch/api/v1/auctions?type=json', {
-                mode: 'no-cors',
-                cache: 'no-store',
-            }
-        ).then((res) => res.json());
+        const requestOptions = {
+            method: "GET",
+            redirect: "follow",
+            mode: "no-cors"
+          };
+          
+          const response = await fetch("https://auta.ch/api/v1/auctions?type=json", requestOptions)
+            .then((response) => response.json())
 
         const filteredAuctions = response
             .filter((entry: any) => {
