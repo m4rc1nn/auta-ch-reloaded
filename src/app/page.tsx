@@ -63,10 +63,13 @@ async function getAuctions(
     try {
         const response = await fetch(`https://auta.ch/api/v1/auctions/?format=json`, {
             cache: "no-store",
-            next: { revalidate: 1 }
+            next: { revalidate: 1 },
         }).then((res) => res.json());
 
         const filteredAuctions = response
+            .sort((a: number, b: number) => {
+                return a - b;
+            })
             .filter((entry: any) => {
                 if (brand === null) return true;
                 if (brand.trim() === "") return false;
