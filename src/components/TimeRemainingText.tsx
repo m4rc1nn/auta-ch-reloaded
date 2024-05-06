@@ -13,10 +13,10 @@ export default function TimeRemainingText({ endDate }: { endDate: Date }) {
         return () => clearInterval(interval);
     }, []);
     return (
-        <div className="flex flex-row items-center gap-2">
+        <span className="flex flex-row items-center gap-2">
             <PaperPlaneIcon />
             {timeRemaining}
-        </div>
+        </span>
     );
 }
 
