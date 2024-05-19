@@ -43,11 +43,11 @@ export default async function Home({ searchParams }: { searchParams: any }) {
                     <span className="text-xl underline">Nie znaleziono aukacji dla podanych filtrów.</span>
                 </div>
             )}
-            <ul className="mt-6 grid gap-3 md:grid-cols-2 lg:grid-cols-3 place-items-start">
+            <div className="mt-6 grid gap-3 md:grid-cols-2 lg:grid-cols-3 place-items-start">
                 {auctions.map((auction, index: number) => {
                     return <AuctionCard key={index} auction={auction} />;
                 })}
-            </ul>
+            </div>
         </div>
     );
 }
@@ -61,10 +61,7 @@ async function getAuctions(
     auctionEndBefore: Date | null
 ): Promise<Auction[] | Error> {
     try {
-        const response = await fetch(`https://auta.ch/api/v1/auctions/?format=json`, {
-            cache: "no-store",
-            next: { revalidate: 1 },
-        }).then((res) => res.json());
+        const response = await fetch(`https://auta.ch/api/v1/auctions/?format=json`).then((res) => res.json());
 
         const filteredAuctions = response
             .sort((a: number, b: number) => {

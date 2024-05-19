@@ -1,13 +1,12 @@
+export const dynamic = 'force-dynamic';
+export const revalidate = 10;
+
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/NavBar";
 
 const inter = Inter({ subsets: ["latin"] });
-
-export const dynamic = "force-static";
-
-export const revalidate = 10;
 
 export const metadata: Metadata = {
     title: "Auta-ch-reloaded",
