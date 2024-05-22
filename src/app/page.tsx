@@ -110,7 +110,11 @@ async function getAuctions(
                     firstRegistration: new Date(entry.production_date),
                     mileage: parseInt(entry.run),
                     referenceNumber: entry.ref_id,
-                    auctionEnd: new Date(entry.end_date ?? ""),
+                    auctionEnd: (() => {
+                        const endDate = new Date(entry.end_date ?? "");
+                        endDate.setHours(endDate.getHours() - 2);
+                        return endDate;
+                    })(),
                 };
 
                 return auction;
