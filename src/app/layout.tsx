@@ -1,5 +1,5 @@
 export const dynamic = 'force-dynamic';
-export const revalidate = 10;
+export const revalidate = 3600;
 
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";

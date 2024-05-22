@@ -1,6 +1,7 @@
 import AuctionCard from "@/components/AuctionCard";
 import { Auction } from "./types/Auction";
 import FilterSheet from "@/components/FilterSheet";
+import AuctionBox from "@/components/AuctionBox";
 
 export default async function Home({ searchParams }: { searchParams: any }) {
     const { brand, productionFrom, productionTo, mileageFrom, mileageTo, auctionEndBefore } = searchParams;
@@ -43,11 +44,7 @@ export default async function Home({ searchParams }: { searchParams: any }) {
                     <span className="text-xl underline">Nie znaleziono aukacji dla podanych filtrów.</span>
                 </div>
             )}
-            <div className="mt-6 grid gap-3 md:grid-cols-2 lg:grid-cols-3 place-items-start">
-                {auctions.map((auction, index: number) => {
-                    return <AuctionCard key={index} auction={auction} />;
-                })}
-            </div>
+            <AuctionBox auctions={auctions} />
         </div>
     );
 }
