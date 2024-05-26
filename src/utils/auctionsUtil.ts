@@ -1,3 +1,5 @@
+import { Auction } from "@/app/types/Auction";
+
 let cache = {
     timestamp: 0,
     data: null as any
