@@ -1,7 +1,6 @@
-import AuctionCard from "@/components/AuctionCard";
-import { Auction } from "./types/Auction";
 import FilterSheet from "@/components/FilterSheet";
 import AuctionBox from "@/components/AuctionBox";
+import { getAuctions } from "@/utils/auctionsUtil";
 
 export default async function Home({ searchParams }: { searchParams: any }) {
     const { brand, productionFrom, productionTo, mileageFrom, mileageTo, auctionEndBefore } = searchParams;
@@ -47,90 +46,4 @@ export default async function Home({ searchParams }: { searchParams: any }) {
             <AuctionBox auctions={auctions} />
         </div>
     );
-}
-
-async function getAuctions(
-    brand: string | null,
-    productionStart: Date | null,
-    productionEnd: Date | null,
-    mileageFrom: number | null,
-    mileageTo: number | null,
-    auctionEndBefore: Date | null
-): Promise<Auction[] | Error> {
-    try {
-        const response = await fetch(`https://auta.ch/api/v1/auctions/?format=json`).then((res) => res.json());
-
-        const filteredAuctions = response
-            .sort((a: number, b: number) => {
-                return a - b;
-            })
-            .filter((entry: any) => {
-                if (brand === null) return true;
-                if (brand.trim() === "") return false;
-                if (!entry.title.toLowerCase().includes(brand.toLowerCase())) return false;
-                return true;
-            })
-            .filter((entry: any) => {
-                if (productionStart === null) return true;
-                const firstRegistration: Date = new Date(entry.production_date);
-                if (firstRegistration.getTime() < productionStart.getTime()) return false;
-                return true;
-            })
-            .filter((entry: any) => {
-                if (productionEnd === null) return true;
-                const firstRegistration: Date = new Date(entry.production_date);
-                if (firstRegistration.getTime() > productionEnd.getTime()) return false;
-                return true;
-            })
-            .filter((entry: any) => {
-                if (mileageFrom === null) return true;
-                const mileage: number = entry.run;
-                if (mileage < mileageFrom) return false;
-                return true;
-            })
-            .filter((entry: any) => {
-                if (mileageTo === null) return true;
-                const mileage: number = entry.run;
-                if (mileage < mileageTo) return false;
-                return true;
-            })
-            .filter((entry: any) => {
-                if (auctionEndBefore === null) return true;
-                const auctionEnd: Date = new Date(entry.end_date);
-                if (auctionEnd.getTime() > auctionEndBefore.getTime()) return false;
-                return true;
-            })
-            .map((entry: any) => {
-                const link = `https://auta.ch/aukcje/licytacja/${entry.id}/${toKebabCase(entry.title)}`;
-                const img = `https://auta.ch/${entry.photos}`;
-                const auction: Auction = {
-                    link,
-                    name: entry.title,
-                    img,
-                    firstRegistration: new Date(entry.production_date),
-                    mileage: parseInt(entry.run),
-                    referenceNumber: entry.ref_id,
-                    auctionEnd: (() => {
-                        const endDate = new Date(entry.end_date ?? "");
-                        endDate.setHours(endDate.getHours() - 2);
-                        return endDate;
-                    })(),
-                };
-
-                return auction;
-            });
-
-        return filteredAuctions.reverse();
-    } catch (error) {
-        console.error(error);
-        return new Error("Error while fetching data from auta.ch");
-    }
-}
-
-function toKebabCase(text: string) {
-    return text
-        .replace(/[\s_]+/g, "-")
-        .replace(/([A-Z])/g, (match, letter, index) => (index > 0 ? "-" : "") + letter.toLowerCase())
-        .replace(/[^a-zA-Z0-9-]/g, "")
-        .replace(/^-+|-+$/g, "");
 }
