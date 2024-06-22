@@ -37,13 +37,6 @@ export default function AuctionCard({ auction }: { auction: Auction }) {
                         alt={auction.name}
                         className="h-full w-full object-cover max-h-[300px] rounded-md"
                     />
-                    {/* <Image
-                        src={auction.img}
-                        width={450}
-                        height={250}
-                        alt={auction.name}
-                        className="h-full w-full object-cover max-h-[300px] rounded-md"
-                    /> */}
                     <div className="absolute top-0 left-0 p-3 md:p-5 w-full h-full flex justify-start items-end z-10">
                         <div className="flex justify-start gap-2 p-1">
                             <Badge variant="secondary" className="flex flex-row gap-1 items-center">

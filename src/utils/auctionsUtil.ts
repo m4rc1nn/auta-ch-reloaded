@@ -2,8 +2,8 @@ import { Auction } from "@/app/types/Auction";
 
 let cache = {
     timestamp: 0,
-    data: null as any
-}
+    data: null as any,
+};
 
 const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes in milliseconds
 
@@ -19,8 +19,8 @@ async function fetchAuctions() {
             data: response.reverse(),
         };
         return response.reverse();
-    } catch(error) {
-        throw new Error("Error while fetching data from auta.ch")
+    } catch (error) {
+        throw new Error("Error while fetching data from auta.ch");
     }
 }
 
@@ -33,9 +33,9 @@ export async function getAuctions(
     auctionEndBefore: Date | null
 ): Promise<Auction[] | Error> {
     try {
-        
         const auctions = await fetchAuctions();
         const filteredAuctions = auctions
+            .slice(0, 10)
             .sort((a: number, b: number) => {
                 return a - b;
             })
@@ -75,8 +75,26 @@ export async function getAuctions(
                 if (auctionEnd.getTime() > auctionEndBefore.getTime()) return false;
                 return true;
             })
-            .map((entry: any) => {
+            .map(async (entry: any) => {
                 const link = `https://auta.ch/aukcje/licytacja/${entry.id}/${toKebabCase(entry.title)}`;
+                console.log("test");
+                const response = await fetch(entry.link, {})
+                    .then((res) => {
+                        console.log(res);
+                        return res.text();
+                    })
+                    .catch((error) => {
+                        console.error("Error fetching the webpage:", error);
+                    });
+
+                console.log(response);
+
+                let parser = new DOMParser();
+                let doc = parser.parseFromString(response!, "text/html");
+
+                let images = doc.querySelectorAll("img.example-image");
+
+                console.log(images);
                 const img = `https://auta.ch/${entry.photos}`;
                 const auction: Auction = {
                     link,
